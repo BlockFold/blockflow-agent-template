@@ -1,0 +1,101 @@
+{
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": true
+  },
+
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "tailwindCSS.includeLanguages": {
+    "svelte": "html"
+  },
+
+  "diffEditor.codeLens": true,
+  "python.formatting.provider": "black",
+  "prettier.printWidth": 160,
+  "cSpell.words": [
+    "AAVE",
+    "asmcli",
+    "automations",
+    "basepath",
+    "bignum",
+    "bignumber",
+    "Bips",
+    "Blockflow",
+    "blockfold",
+    "CERTDIR",
+    "cloudsql",
+    "codeserve",
+    "colour",
+    "colours",
+    "DIND",
+    "DOCKERHUB",
+    "Docusign",
+    "ethersproject",
+    "gcloud",
+    "growingdata",
+    "healthz",
+    "IERC",
+    "ingressgateway",
+    "Ipfs",
+    "istio",
+    "jsoneditor",
+    "kaniko",
+    "Keccak",
+    "keyserve",
+    "kubescape",
+    "Networkish",
+    "Newtonsoft",
+    "nomicfoundation",
+    "Noorium",
+    "onreconnected",
+    "onreconnecting",
+    "onwarn",
+    "operationalize",
+    "panzoom",
+    "Permissioned",
+    "productionize",
+    "radtastic",
+    "RPCS",
+    "runtimes",
+    "RWAT",
+    "secretserve",
+    "sendgrid",
+    "Serilog",
+    "sideserve",
+    "SIEMs",
+    "signalr",
+    "solhint",
+    "stablecoins",
+    "stackdriver",
+    "svcacc",
+    "sveltejs",
+    "tailwindcss",
+    "teamserve",
+    "txserve",
+    "typechain",
+    "Unsubscriber",
+    "usecases",
+    "walletconnect"
+  ],
+  "files.watcherExclude": {
+    "**/artifacts/**": true,
+    "**/cache/**": true,
+    "**/dist/**": true,
+    "**/node_modules/**": true,
+    "**/node_modules/*/**": true,
+    "**/typechain/**": true
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  }
+}

@@ -1,0 +1,62 @@
+blockFlowVersion: 1.0.0
+agentVersion: 1.0.2
+agentType: protocol-manager
+name: Blockflow ERC20
+code: blockflow-erc20
+license: "public/free"
+description: |
+  An ERC20 token contract keeps track of fungible tokens: any one token is exactly equal to any other token; 
+  no tokens have special rights or behavior associated with them. This makes ERC20 tokens useful for things 
+  like a medium of exchange currency, voting rights, staking, and more.
+
+  Smart contracts are based on the Open Zeppelin reference implementation with AccessControl
+  and Pause enhancements.
+
+tags:
+  - erc20
+  - protocol
+  - deploy
+
+icon: "fa-duotone fa-coin-vertical"
+entrypoint: "agentERC20Base"
+
+metrics:
+  transfers:
+    metricId: transfers
+    name: Transfer count
+    shortName: Transfers
+    description: The total number of transfers in the given period
+    aggregation: Count
+    unitType: INT
+
+  transferValue:
+    metricId: transferValue
+    name: Total transfer value
+    shortName: Total
+    description: The total value of transfers in the given period
+    aggregation: Sum
+    unitType: ERC20
+
+  totalSupply:
+    metricId: totalSupply
+    name: Total supply
+    shortName: Supply
+    description: The total supply of tokens
+    aggregation: Last
+    unitType: ERC20
+
+layout:
+  - component: ERC20Balances
+    name: Protocol balances
+    description: ERC20
+    id: erc20-balances
+    position:
+      x: 900
+      y: 200
+  - component: AgentGeneric
+    name: ERC20 Smart Contract
+    description: ERC20
+    id: erc20-smart-contract
+    position:
+      x: 300
+      y: 400

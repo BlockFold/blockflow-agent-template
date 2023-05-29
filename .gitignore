@@ -1,0 +1,24 @@
+
+.env
+.env.*
+.secrets
+.history
+.idea
+.history
+.pluralith
+.DS_Store
+coverage
+coverage.json
+typechain
+typechain-types
+node_modules
+/lib
+#Hardhat files
+cache
+artifacts
+
+node_modules
+.env
+.dev.env
+coverage
+typechain
