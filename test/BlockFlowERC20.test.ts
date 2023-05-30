@@ -1,4 +1,6 @@
+import '@nomicfoundation/hardhat-chai-matchers';
 import { loadFixture } from '@nomicfoundation/hardhat-network-helpers';
+import '@nomiclabs/hardhat-ethers';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 
@@ -14,7 +16,7 @@ describe('BlockFlowERC20', function () {
     const bob = signers[2];
 
     const BlockFlowERC20 = await ethers.getContractFactory(contractName, deployer);
-    let blockFlowERC20 = await BlockFlowERC20.deploy();
+    let blockFlowERC20 = await BlockFlowERC20.deploy(tokenName, tokenSymbol);
     await blockFlowERC20.deployed();
     await blockFlowERC20.mint(bob.address, ethers.utils.parseEther('1000'));
 
@@ -55,24 +57,22 @@ describe('BlockFlowERC20', function () {
   describe('pause', function () {
     it('Caller must have the PAUSER_ROLE.', async function () {
       const { alice, deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
-      await expect(blockFlowERC20.connect(alice).pause()).to.be.rejected;
+      await expect(blockFlowERC20.connect(alice).pause()).to.be.reverted;
       let txn = await blockFlowERC20.connect(deployer).pause();
       await txn.wait();
     });
 
     it('Must pause the contract.', async function () {
-      const { alice, deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
+      const { deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
       let txn = await blockFlowERC20.connect(deployer).pause();
-      await txn.wait();
-      txn = await blockFlowERC20.connect(deployer).mint(alice.address, ethers.utils.parseEther('100'));
       await txn.wait();
     });
 
     it('Must fail if the contract is already paused.', async function () {
-      const { alice, deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
+      const { deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
       let txn = await blockFlowERC20.connect(deployer).pause();
       await txn.wait();
-      await expect(blockFlowERC20.connect(deployer).pause()).to.be.rejectedWith('Pausable: paused');
+      await expect(blockFlowERC20.connect(deployer).pause()).to.be.revertedWith('Pausable: paused');
     });
   });
 
@@ -81,7 +81,7 @@ describe('BlockFlowERC20', function () {
       const { alice, deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
       let txn = await blockFlowERC20.connect(deployer).pause();
       await txn.wait();
-      await expect(blockFlowERC20.connect(alice).unpause()).to.be.rejected;
+      await expect(blockFlowERC20.connect(alice).unpause()).to.be.reverted;
       txn = await blockFlowERC20.connect(deployer).unpause();
       await txn.wait();
     });
@@ -98,14 +98,14 @@ describe('BlockFlowERC20', function () {
 
     it('Must fail if the contract is not paused.', async function () {
       const { deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
-      await expect(blockFlowERC20.connect(deployer).unpause()).to.be.rejectedWith('Pausable: not paused');
+      await expect(blockFlowERC20.connect(deployer).unpause()).to.be.revertedWith('Pausable: not paused');
     });
   });
 
   describe('mint', function () {
     it('Caller must have the MINTER_ROLE.', async function () {
       const { alice, deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
-      await expect(blockFlowERC20.connect(alice).mint(alice.address, ethers.utils.parseEther('100')).to.be.rejected);
+      await expect(blockFlowERC20.connect(alice).mint(alice.address, ethers.utils.parseEther('100'))).to.be.reverted;
       let txn = await blockFlowERC20.connect(deployer).mint(alice.address, ethers.utils.parseEther('100'));
       await txn.wait();
     });
@@ -116,7 +116,7 @@ describe('BlockFlowERC20', function () {
       await txn.wait();
       await expect(
         blockFlowERC20.connect(deployer).mint(alice.address, ethers.utils.parseEther('100')),
-      ).to.be.rejectedWith('Pausable: paused');
+      ).to.be.revertedWith('Pausable: paused');
     });
 
     it('Must mint a token to `to`.', async function () {
@@ -133,7 +133,7 @@ describe('BlockFlowERC20', function () {
       const { alice, deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
       let txn = await blockFlowERC20.connect(deployer).mint(alice.address, ethers.utils.parseEther('100'));
       await txn.wait();
-      await expect(blockFlowERC20.connect(alice).burn(ethers.utils.parseEther('100')).to.be.rejected);
+      await expect(blockFlowERC20.connect(alice).burn(ethers.utils.parseEther('100'))).to.be.reverted;
       txn = await blockFlowERC20.connect(deployer).grantRole(await blockFlowERC20.BURNER_ROLE(), alice.address);
       await txn.wait();
       txn = await blockFlowERC20.connect(alice).burn(ethers.utils.parseEther('100'));
@@ -144,13 +144,13 @@ describe('BlockFlowERC20', function () {
       const { alice, deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
       let txn = await blockFlowERC20.connect(deployer).mint(alice.address, ethers.utils.parseEther('100'));
       await txn.wait();
-      await expect(blockFlowERC20.connect(alice).burn(ethers.utils.parseEther('100')).to.be.rejected);
+      await expect(blockFlowERC20.connect(alice).burn(ethers.utils.parseEther('100'))).to.be.reverted;
       txn = await blockFlowERC20.connect(deployer).grantRole(await blockFlowERC20.BURNER_ROLE(), alice.address);
       await txn.wait();
       txn = await blockFlowERC20.connect(deployer).pause();
       await txn.wait();
-      await expect(
-        blockFlowERC20.connect(alice).burn(ethers.utils.parseEther('100')).to.be.rejectedWith('Pausable: paused'),
+      await expect(blockFlowERC20.connect(alice).burn(ethers.utils.parseEther('100'))).to.be.revertedWith(
+        'Pausable: paused',
       );
     });
 
@@ -158,7 +158,9 @@ describe('BlockFlowERC20', function () {
       const { bob, deployer, blockFlowERC20 } = await loadFixture(deployBlockFlowERC20);
       let amountToBurn = ethers.utils.parseEther('100');
       let bobBlanceBefore = await blockFlowERC20.balanceOf(bob.address);
-      let txn = await blockFlowERC20.connect(bob).burn();
+      let txn = await blockFlowERC20.connect(deployer).grantRole(await blockFlowERC20.BURNER_ROLE(), bob.address);
+      await txn.wait();
+      txn = await blockFlowERC20.connect(bob).burn(amountToBurn);
       await txn.wait();
       let bobBlanceAfter = await blockFlowERC20.balanceOf(bob.address);
       expect(bobBlanceAfter).to.equal(bobBlanceBefore.sub(amountToBurn));

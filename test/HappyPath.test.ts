@@ -1,6 +1,6 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { ethers } from 'hardhat';
-import { BlockFlowERC20 } from '../typechain-types';
+import { BlockFlowERC20 } from '../typechain/contracts';
 
 describe('HappyPath', function () {
   let blockFlowERC20: BlockFlowERC20;
@@ -19,7 +19,7 @@ describe('HappyPath', function () {
     bob = signers[2];
 
     const BlockFlowERC20 = await ethers.getContractFactory(contractName, deployer);
-    blockFlowERC20 = await BlockFlowERC20.deploy();
+    blockFlowERC20 = await BlockFlowERC20.deploy(tokenName, tokenSymbol);
     await blockFlowERC20.deployed();
     await blockFlowERC20.mint(bob.address, ethers.utils.parseEther('1000'));
   });
@@ -39,7 +39,7 @@ describe('HappyPath', function () {
     await txn.wait();
   });
 
-  it('Bob burns some of his tokens', async function () {
+  it('Bob burns some tokens', async function () {
     let txn = await blockFlowERC20.connect(bob).burn(ethers.utils.parseEther('100'));
     await txn.wait();
   });

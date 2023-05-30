@@ -27,7 +27,7 @@ contract BlockFlowERC20 is ERC20, ERC20Burnable, Pausable, AccessControl {
      * - `MINTER_ROLE` must be granted to caller.
      * - `BURNER_ROLE` must be granted to caller.
      */
-    constructor(string memory _name, string memory _symbol) ERC20(name, symbol) {
+    constructor(string memory _name, string memory _symbol) ERC20(_name, _symbol) {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
