@@ -1,5 +1,6 @@
 import { ActionConfig, ActionField, Agent } from "@blockfold/blockflow-agent";
 import { BlockFlowERC20 } from "../typechain";
+import { Roles } from "./types/roles";
 
 const revokeFromParam: ActionField = {
   id: "to",
@@ -22,12 +23,6 @@ const amountParam: ActionField = {
     DEFAULT_ADMIN_ROLE: "Enable Grant / Revoke roles (superuser).",
   },
 };
-
-type Roles =
-  | "PAUSER_ROLE"
-  | "MINTER_ROLE"
-  | "BURNER_ROLE"
-  | "DEFAULT_ADMIN_ROLE";
 
 export function bindActionRoleGrant(agent: Agent, erc20: BlockFlowERC20) {
   console.log(`bindActionTransfer: agent`, agent.agentCode);

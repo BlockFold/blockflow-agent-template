@@ -6,6 +6,7 @@ import { BigNumber } from "ethers";
 import { BlockFlowERC20 } from "../typechain";
 import { getERC20Reference } from "./helpers/getERC20Reference";
 import { grantRole } from "./helpers/grantRole";
+import { revokeRole } from "./helpers/revokeRole";
 import {
   AgentStateResult,
   startAgentFixture,
@@ -21,7 +22,7 @@ const agentTxSignerId = "fiona";
 const roleRecipientSignerId = "alex";
 let roleRecipientAddress: string;
 
-describe("actionGrant", function () {
+describe("actionRoleRevoke", function () {
   beforeEach(async function () {
     // Load the fixture and get a reference to our agent and
     // Blockflow Hardhat Runtime Environment (bfHRE)
@@ -38,28 +39,11 @@ describe("actionGrant", function () {
     return;
   });
 
-  it("Should be able to grant the BURNER_ROLE", async function () {
+  it("Should be able to revoke the BURNER_ROLE", async function () {
     const role = "BURNER_ROLE";
 
     // Now grant the role.
-    /*
-    const agentName = agent.deployment.name;
-    const agentAction = "Grant role";
-    const agentCallData: any = {
-      to: roleRecipientAddress,
-      role,
-    };
-
-    const response = await bfHRE.blockflowAgentCall(
-      agentName,
-      agentAction,
-      agentTxSignerId,
-      agentCallData
-    );
-    */
-
-    // grantRole function does the same as the commented out code above
-    const response = await grantRole(
+    let response = await grantRole(
       agent,
       bfHRE,
       agentTxSignerId,
@@ -68,19 +52,30 @@ describe("actionGrant", function () {
     );
 
     // Confirm that the role was granted.
-    expect(response.success, "Grant role response successful").to.be.true;
     expect(await erc20.hasRole(await erc20.BURNER_ROLE(), roleRecipientAddress))
       .to.be.true;
+
+    response = await revokeRole(
+      agent,
+      bfHRE,
+      agentTxSignerId,
+      roleRecipientSignerId,
+      role
+    );
+
+    // Confirm that the role was revoked.
+    expect(await erc20.hasRole(await erc20.BURNER_ROLE(), roleRecipientAddress))
+      .to.be.false;
 
     // False positive check
     // throw new Error("Not a false positive test");
   });
 
-  it("Should be able to grant the PAUSER_ROLE", async function () {
+  it("Should be able to revoke the PAUSER_ROLE", async function () {
     const role = "PAUSER_ROLE";
 
     // Now grant the role.
-    const response = await grantRole(
+    let response = await grantRole(
       agent,
       bfHRE,
       agentTxSignerId,
@@ -93,15 +88,27 @@ describe("actionGrant", function () {
     expect(await erc20.hasRole(await erc20.PAUSER_ROLE(), roleRecipientAddress))
       .to.be.true;
 
+    response = await revokeRole(
+      agent,
+      bfHRE,
+      agentTxSignerId,
+      roleRecipientSignerId,
+      role
+    );
+
+    // Confirm that the role was revoked.
+    expect(await erc20.hasRole(await erc20.PAUSER_ROLE(), roleRecipientAddress))
+      .to.be.false;
+
     // False positive check
     // throw new Error("Not a false positive test");
   });
 
-  it("Should be able to grant the MINTER_ROLE", async function () {
+  it("Should be able to revoke the MINTER_ROLE", async function () {
     const role = "MINTER_ROLE";
 
     // Now grant the role.
-    const response = await grantRole(
+    let response = await grantRole(
       agent,
       bfHRE,
       agentTxSignerId,
@@ -114,15 +121,27 @@ describe("actionGrant", function () {
     expect(await erc20.hasRole(await erc20.MINTER_ROLE(), roleRecipientAddress))
       .to.be.true;
 
+    response = await revokeRole(
+      agent,
+      bfHRE,
+      agentTxSignerId,
+      roleRecipientSignerId,
+      role
+    );
+
+    // Confirm that the role was revoked.
+    expect(await erc20.hasRole(await erc20.MINTER_ROLE(), roleRecipientAddress))
+      .to.be.false;
+
     // False positive check
     // throw new Error("Not a false positive test");
   });
 
-  it("Should be able to grant the DEFAULT_ADMIN_ROLE", async function () {
+  it("Should be able to revoke the DEFAULT_ADMIN_ROLE", async function () {
     const role = "DEFAULT_ADMIN_ROLE";
 
     // Now grant the role.
-    const response = await grantRole(
+    let response = await grantRole(
       agent,
       bfHRE,
       agentTxSignerId,
@@ -138,6 +157,22 @@ describe("actionGrant", function () {
         roleRecipientAddress
       )
     ).to.be.true;
+
+    response = await revokeRole(
+      agent,
+      bfHRE,
+      agentTxSignerId,
+      roleRecipientSignerId,
+      role
+    );
+
+    // Confirm that the role was revoked.
+    expect(
+      await erc20.hasRole(
+        await erc20.DEFAULT_ADMIN_ROLE(),
+        roleRecipientAddress
+      )
+    ).to.be.false;
 
     // False positive check
     // throw new Error("Not a false positive test");
