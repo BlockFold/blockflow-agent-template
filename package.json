@@ -7,6 +7,9 @@
 	"scripts": {
 		"compile": "npx hardhat compile",
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"test:contracts": "npx hardhat test --no-compile",
+		"test:agent": "npx hardhat test ./test-agent/*.test.ts --no-compile",
+		"test:all": "npx hardhat test ./test-agent/*.test.ts ./test/*.test.ts --no-compile",
 		"prepublish": "tsc"
 	},
 	"author": "",
