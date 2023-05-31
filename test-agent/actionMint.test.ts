@@ -38,7 +38,7 @@ describe("actionMint", function () {
       .blockflowSignerGet(recipientId)
       .then((v) => v.getAddress());
 
-    const agentSignerId = "fiona";
+    const agentTxSignerId = "fiona";
 
     /*
     const agentAction = "Mint";
@@ -51,7 +51,7 @@ describe("actionMint", function () {
     const response = await bfHRE.blockflowAgentCall(
       agentName,
       agentAction,
-      agentSignerId,
+      agentTxSignerId,
       agentCallData
     );
     */
@@ -60,7 +60,7 @@ describe("actionMint", function () {
     const response = await mintTokens(
       agent,
       bfHRE,
-      agentSignerId,
+      agentTxSignerId,
       mintAmountHuman,
       recipientId
     );
@@ -74,6 +74,6 @@ describe("actionMint", function () {
     expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
 
     // False positive check
-    // throw new Error("Not implemented");
+    // throw new Error("Not a false positive test");
   });
 });

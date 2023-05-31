@@ -5,7 +5,6 @@ import { expect } from "chai";
 import { BigNumber } from "ethers";
 import { BlockFlowERC20 } from "../typechain";
 import { getERC20Reference } from "./helpers/getERC20Reference";
-import { mintTokens } from "./helpers/mintTokens";
 import {
   AgentStateResult,
   startAgentFixture,
@@ -30,29 +29,10 @@ describe("actionApprove", function () {
   });
 
   it("Should be able to 'Approve' a non-owner EOA", async function () {
-    // Must mint some tokens first
-    const mintAmountHuman = 123;
-    const mintAmountEther = ONE.mul(mintAmountHuman);
-
-    const agentSignerId = "fiona";
-    const recipientId = "alex";
-    const alexAddress = await bfHRE
-      .blockflowSignerGet(recipientId)
+    const ownerSignerId = "alex";
+    const ownerAddress = await bfHRE
+      .blockflowSignerGet(ownerSignerId)
       .then((v) => v.getAddress());
-
-    let response = await mintTokens(
-      agent,
-      bfHRE,
-      agentSignerId,
-      mintAmountHuman,
-      recipientId
-    );
-
-    expect(response.success, "Mint to alex Success").to.be.true;
-
-    // Confirming that Alex now has a balance of 123 tokens.
-    const alexRawBalance = await erc20.balanceOf(alexAddress);
-    expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
 
     // Now approve a non-owner EOA to spend Alex's tokens.
     const agentName = agent.deployment.name;
@@ -60,28 +40,31 @@ describe("actionApprove", function () {
     const spenderAddress = await bfHRE
       .blockflowSignerGet("ivan")
       .then((v) => v.getAddress());
+
     const spenderAllowanceAmountHuman = 100;
     const spenderAllowanceAmountEther = ONE.mul(spenderAllowanceAmountHuman);
-
     const agentCallData: any = {
       spender: spenderAddress,
       amount: spenderAllowanceAmountHuman,
     };
 
-    response = await bfHRE.blockflowAgentCall(
+    const response = await bfHRE.blockflowAgentCall(
       agentName,
       agentAction,
-      recipientId, // Alex is the owner and must sign this transaction
+      ownerSignerId, // The owner and must sign this transaction
       agentCallData
     );
 
     // Confirm that the spender was approved for the correct amount.
     expect(response.success, "Approve response successful").to.be.true;
 
-    const spenderAllowance = await erc20.allowance(alexAddress, spenderAddress);
+    const spenderAllowance = await erc20.allowance(
+      ownerAddress,
+      spenderAddress
+    );
     expect(spenderAllowance.eq(spenderAllowanceAmountEther)).to.be.true;
 
     // False positive check
-    // throw new Error("Not implemented");
+    // throw new Error("Not a false positive test");
   });
 });
