@@ -1,22 +1,23 @@
 import { Agent } from "@blockfold/blockflow-agent";
 import { BlockflowHRE } from "blockflow-hardhat";
 
-export async function mintTokens(
+export async function grantRole(
   agent: Agent,
   bfHRE: BlockflowHRE,
-  signerId: string,
-  amount: number,
-  recipientId: string
+  agentTxSignerId: string,
+  roleRecipientId: string,
+  role: string
 ) {
-  const agentAction = "Mint";
-  const agentName = agent.deployment.name;
-  const agentTxSignerId = signerId;
   const recipientAddress = await bfHRE
-    .blockflowSignerGet(recipientId)
+    .blockflowSignerGet(roleRecipientId)
     .then((v) => v.getAddress());
-  const agentCallData = {
+
+  // Now grant the role.
+  const agentName = agent.deployment.name;
+  const agentAction = "Grant role";
+  const agentCallData: any = {
     to: recipientAddress,
-    amount: amount,
+    role,
   };
 
   const response = await bfHRE.blockflowAgentCall(
@@ -28,7 +29,7 @@ export async function mintTokens(
 
   if (!response.success) {
     throw new Error(
-      `Mint ${amount} tokens using signer ${signerId} to recipient ${recipientId} failed`
+      `Grant role: ${role}, using signer: ${agentTxSignerId}, to recipient: ${roleRecipientId} failed`
     );
   }
 
