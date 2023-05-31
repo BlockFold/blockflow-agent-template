@@ -5,6 +5,7 @@ import { expect } from "chai";
 import { BigNumber } from "ethers";
 import { BlockFlowERC20 } from "../typechain";
 import { getERC20Reference } from "./helpers/getERC20Reference";
+import { mintTokens } from "./helpers/mintTokens";
 import {
   AgentStateResult,
   startAgentFixture,
@@ -28,71 +29,69 @@ describe("actionMint", function () {
     return;
   });
 
-  it.only("Fiona burns 123", async function () {
-    const { bfHRE, agent } = (await loadFixture(
-      startAgentFixture
-    )) as AgentStateResult;
-
-    // Get a reference to our ERC20 contract
-    const contractAddress = await agent.getState("contractAddress");
-    const erc20 = (await agent.getContract(
-      contractAddress,
-      "BlockFlowERC20"
-    )) as BlockFlowERC20;
-    const decimals = await erc20.decimals();
-    const ONE = BigNumber.from(10).pow(decimals);
-
+  it.only("Should be able to burn tokens", async function () {
+    // Must mint some tokens first
     const mintAmountHuman = 123;
     const mintAmountEther = ONE.mul(mintAmountHuman);
 
-    const alex = await bfHRE.blockflowSignerGet("alex");
-    const alexAddress = await alex.getAddress();
-    let response = await bfHRE.blockflowAgentCall(
-      agent.deployment.name,
-      "Mint",
-      "fiona",
-      {
-        to: alexAddress,
-        amount: mintAmountHuman,
-      }
+    const agentSignerId = "fiona";
+    const recipientId = "alex";
+    const alexAddress = await bfHRE
+      .blockflowSignerGet(recipientId)
+      .then((v) => v.getAddress());
+
+    let response = await mintTokens(
+      agent,
+      bfHRE,
+      agentSignerId,
+      mintAmountHuman,
+      recipientId
     );
-    console.log("callResponse", response);
+
     expect(response.success, "Mint to alex Success").to.be.true;
 
-    let alexRawBalance = await erc20.balanceOf(alexAddress);
-    console.log("Alex Raw alexRawBalance", alexRawBalance);
+    // Confirming that Alex now has a balance of 123 tokens.
+    const alexRawBalance = await erc20.balanceOf(alexAddress);
+    expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
 
-    expect(alexRawBalance.eq(mintAmountEther));
+    // Now grant the role to burn tokens.
+    const agentName = agent.deployment.name;
+    let agentAction = "Grant role";
+    let agentCallData: any = {
+      to: alexAddress,
+      role: "BURNER_ROLE",
+    };
 
-    const agentAction = "Grant role";
     response = await bfHRE.blockflowAgentCall(
-      agent.deployment.name,
+      agentName,
       agentAction,
-      "fiona",
-      {
-        to: alexAddress,
-        role: "BURNER_ROLE",
-      }
+      agentSignerId,
+      agentCallData
     );
 
+    // Confirm that the BURNER_ROLE was granted.
     expect(response.success, "Grant role response successful").to.be.true;
     expect(await erc20.hasRole(await erc20.BURNER_ROLE(), alexAddress)).to.be
       .true;
 
+    // Now burn the tokens.
+    agentAction = "Burn";
+    agentCallData = {
+      amount: mintAmountHuman,
+    };
+
     response = await bfHRE.blockflowAgentCall(
-      agent.deployment.name,
-      "Burn",
-      "alex",
-      {
-        amount: mintAmountHuman,
-      }
+      agentName,
+      agentAction,
+      recipientId,
+      agentCallData
     );
 
+    // Confirm that the tokens were burned.
     expect(response.success, "Burn NFT response successful").to.be.true;
     expect(alexRawBalance.eq(BigNumber.from(0)));
 
-    ethers.BigNumber.from(0);
-
+    // False positive check
     // throw new Error("Not implemented");
   });
 });

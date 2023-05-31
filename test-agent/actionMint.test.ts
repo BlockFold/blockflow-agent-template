@@ -5,6 +5,7 @@ import { expect } from "chai";
 import { BigNumber } from "ethers";
 import { BlockFlowERC20 } from "../typechain";
 import { getERC20Reference } from "./helpers/getERC20Reference";
+import { mintTokens } from "./helpers/mintTokens";
 import {
   AgentStateResult,
   startAgentFixture,
@@ -28,27 +29,51 @@ describe("actionMint", function () {
     return;
   });
 
-  it.only("Fiona mints 123 to alex", async function () {
+  it.only("Should be able to mint tokens", async function () {
     const mintAmountHuman = 123;
     const mintAmountEther = ONE.mul(mintAmountHuman);
 
-    const alex = await bfHRE.blockflowSignerGet("alex");
-    const alexAddress = await alex.getAddress();
+    const recipientId = "alex";
+    const alexAddress = await bfHRE
+      .blockflowSignerGet(recipientId)
+      .then((v) => v.getAddress());
+
+    const agentSignerId = "fiona";
+
+    /*
+    const agentAction = "Mint";
+    const agentName = agent.deployment.name;
+    const agentCallData = {
+      to: alexAddress,
+      amount: mintAmountHuman,
+    };
+
     const response = await bfHRE.blockflowAgentCall(
-      agent.deployment.name,
-      "Mint",
-      "fiona",
-      {
-        to: alexAddress,
-        amount: mintAmountHuman,
-      }
+      agentName,
+      agentAction,
+      agentSignerId,
+      agentCallData
     );
-    console.log("callResponse", response);
+    */
+
+    // mintTokens function does the same as the commented out code above
+    const response = await mintTokens(
+      agent,
+      bfHRE,
+      agentSignerId,
+      mintAmountHuman,
+      recipientId
+    );
+
+    // console.log("callResponse", response);
     expect(response.success, "Mint to alex Success").to.be.true;
 
-    let alexRawBalance = await erc20.balanceOf(alexAddress);
-    console.log("Alex Raw alexRawBalance", alexRawBalance);
+    const alexRawBalance = await erc20.balanceOf(alexAddress);
+    // console.log("Alex Raw alexRawBalance", alexRawBalance);
 
-    expect(alexRawBalance.eq(mintAmountEther));
+    expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
+
+    // False positive check
+    // throw new Error("Not implemented");
   });
 });
