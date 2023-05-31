@@ -2,11 +2,12 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { ethers } from 'hardhat';
 import { BlockFlowERC20 } from '../typechain/contracts';
 
-describe('HappyPath', function () {
+describe('Happy Path', function () {
   let blockFlowERC20: BlockFlowERC20;
   let deployer: SignerWithAddress;
   let alice: SignerWithAddress;
   let bob: SignerWithAddress;
+  let log: string;
 
   before(async function () {
     const signers = await ethers.getSigners();
@@ -42,5 +43,15 @@ describe('HappyPath', function () {
   it('Bob burns some tokens', async function () {
     let txn = await blockFlowERC20.connect(bob).burn(ethers.utils.parseEther('100'));
     await txn.wait();
+  });
+
+  after(async function () {
+    log = `\n  Deployed ${'BlockFlowERC20'} to ${blockFlowERC20.address}\n\n`;
+    log += '  Signers:\n';
+    log += '  --------\n';
+    log += `  - Deployer:\t${deployer.address}\n`;
+    log += `  - Alice:\t${alice.address}\n`;
+    log += `  - Bob:\t${bob.address}`;
+    console.log(log);
   });
 });
