@@ -1,6 +1,7 @@
-import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-chai-matchers";
 import "@openzeppelin/hardhat-upgrades";
 import "@typechain/hardhat";
+import { HardhatUserConfig } from "hardhat/config";
 
 // This enriches the `hre` environment so we can interact with agents
 import "blockflow-hardhat";
