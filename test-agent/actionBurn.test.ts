@@ -17,7 +17,7 @@ let agent: Agent;
 let erc20: BlockFlowERC20;
 let ONE: BigNumber;
 
-describe("actionMint", function () {
+describe("actionBurn", function () {
   beforeEach(async function () {
     // Load the fixture and get a reference to our agent and
     // Blockflow Hardhat Runtime Environment (bfHRE)
@@ -29,7 +29,7 @@ describe("actionMint", function () {
     return;
   });
 
-  it.only("Should be able to burn tokens", async function () {
+  it("Should be able to burn tokens", async function () {
     // Must mint some tokens first
     const mintAmountHuman = 123;
     const mintAmountEther = ONE.mul(mintAmountHuman);

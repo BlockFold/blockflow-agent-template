@@ -17,7 +17,7 @@ let agent: Agent;
 let erc20: BlockFlowERC20;
 let ONE: BigNumber;
 
-describe("actionMint", function () {
+describe("actionApprove", function () {
   beforeEach(async function () {
     // Load the fixture and get a reference to our agent and
     // Blockflow Hardhat Runtime Environment (bfHRE)
@@ -29,35 +29,18 @@ describe("actionMint", function () {
     return;
   });
 
-  it("Should be able to mint tokens", async function () {
+  it("Should be able to 'Approve' a non-owner EOA", async function () {
+    // Must mint some tokens first
     const mintAmountHuman = 123;
     const mintAmountEther = ONE.mul(mintAmountHuman);
 
+    const agentSignerId = "fiona";
     const recipientId = "alex";
     const alexAddress = await bfHRE
       .blockflowSignerGet(recipientId)
       .then((v) => v.getAddress());
 
-    const agentSignerId = "fiona";
-
-    /*
-    const agentAction = "Mint";
-    const agentName = agent.deployment.name;
-    const agentCallData = {
-      to: alexAddress,
-      amount: mintAmountHuman,
-    };
-
-    const response = await bfHRE.blockflowAgentCall(
-      agentName,
-      agentAction,
-      agentSignerId,
-      agentCallData
-    );
-    */
-
-    // mintTokens function does the same as the commented out code above
-    const response = await mintTokens(
+    let response = await mintTokens(
       agent,
       bfHRE,
       agentSignerId,
@@ -65,13 +48,38 @@ describe("actionMint", function () {
       recipientId
     );
 
-    // console.log("callResponse", response);
     expect(response.success, "Mint to alex Success").to.be.true;
 
+    // Confirming that Alex now has a balance of 123 tokens.
     const alexRawBalance = await erc20.balanceOf(alexAddress);
-    // console.log("Alex Raw alexRawBalance", alexRawBalance);
-
     expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
+
+    // Now approve a non-owner EOA to spend Alex's tokens.
+    const agentName = agent.deployment.name;
+    const agentAction = "Approve";
+    const spenderAddress = await bfHRE
+      .blockflowSignerGet("ivan")
+      .then((v) => v.getAddress());
+    const spenderAllowanceAmountHuman = 100;
+    const spenderAllowanceAmountEther = ONE.mul(spenderAllowanceAmountHuman);
+
+    const agentCallData: any = {
+      spender: spenderAddress,
+      amount: spenderAllowanceAmountHuman,
+    };
+
+    response = await bfHRE.blockflowAgentCall(
+      agentName,
+      agentAction,
+      recipientId, // Alex is the owner and must sign this transaction
+      agentCallData
+    );
+
+    // Confirm that the spender was approved for the correct amount.
+    expect(response.success, "Approve response successful").to.be.true;
+
+    const spenderAllowance = await erc20.allowance(alexAddress, spenderAddress);
+    expect(spenderAllowance.eq(spenderAllowanceAmountEther)).to.be.true;
 
     // False positive check
     // throw new Error("Not implemented");
