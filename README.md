@@ -7,7 +7,6 @@ This project is a template for creating your first Blockflow Agent.
 ## Install dependencies & compile
 
 ```
-npx hardhat compile
 npm i
 ```
 
@@ -20,7 +19,7 @@ npx hardhat test
 ## Test agents
 
 ```
-npx hardhat test ./test-agent/mint.test.ts
+npm run test:agent
 
 ```
 
