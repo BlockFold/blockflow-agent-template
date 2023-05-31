@@ -20,7 +20,6 @@ npx hardhat test
 
 ```
 npm run test:agent
-
 ```
 
 ## Publish your agent
@@ -28,6 +27,8 @@ npm run test:agent
 To publish your agent, you will need to get a `BF_TOKEN` to authenticate yourself with your Blockflow Team. You can get your token from:
 
 https://{{teamName}}.blockflow.com/templates/publish
+
+Or follow the steps [here](https://docs.google.com/document/d/1K_-lGAM96MKHjqCuaEWeYjDmJxbGkC5aJZIy3XW1kpM/edit#heading=h.vnz4h0zbnera) to be guided through the Blockflow interface.
 
 This token should be put in a `.env` file, in the root directory of your agent template.
 
