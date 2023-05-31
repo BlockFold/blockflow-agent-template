@@ -71,7 +71,7 @@ describe("actionMint", function () {
     const alexRawBalance = await erc20.balanceOf(alexAddress);
     // console.log("Alex Raw alexRawBalance", alexRawBalance);
 
-    expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
+    expect(alexRawBalance).to.equal(mintAmountEther);
 
     // False positive check
     // throw new Error("Not a false positive test");

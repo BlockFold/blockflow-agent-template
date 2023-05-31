@@ -54,8 +54,8 @@ describe("actionBurn", function () {
     const agentName = agent.deployment.name;
 
     // Confirming that Alex now has a balance of 123 tokens.
-    const recipientRawBalance = await erc20.balanceOf(recipientAddress);
-    expect(recipientRawBalance.eq(mintAmountEther)).to.be.true;
+    let recipientRawBalance = await erc20.balanceOf(recipientAddress);
+    expect(recipientRawBalance).to.equal(mintAmountEther);
 
     // Now grant the Burner role.
     await grantRole(
@@ -81,7 +81,8 @@ describe("actionBurn", function () {
 
     // Confirm that the tokens were burned.
     expect(response.success, "Burn NFT response successful").to.be.true;
-    expect(recipientRawBalance.eq(BigNumber.from(0)));
+    recipientRawBalance = await erc20.balanceOf(recipientAddress);
+    expect(recipientRawBalance).to.equal(BigNumber.from(0));
 
     // False positive check
     // throw new Error("Not a false positive test");

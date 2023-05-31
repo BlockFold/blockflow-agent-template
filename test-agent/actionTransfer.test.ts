@@ -59,7 +59,7 @@ describe("actionTransfer", function () {
     expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
 
     const fionaRawBalanceBefore = await erc20.balanceOf(fionaAddress);
-    expect(fionaRawBalanceBefore.eq(0)).to.be.true;
+    expect(fionaRawBalanceBefore).to.equal(0);
 
     // transfer the tokens
     const agentName = agent.deployment.name;
@@ -82,7 +82,7 @@ describe("actionTransfer", function () {
     expect(alexRawBalance).to.equal(0);
 
     const fionaRawBalance = await erc20.balanceOf(fionaAddress);
-    expect(fionaRawBalance.eq(mintAmountEther)).to.be.true;
+    expect(fionaRawBalance).to.equal(mintAmountEther);
 
     // False positive check
     // throw new Error("Not implemented");

@@ -62,7 +62,7 @@ describe("actionApprove", function () {
       ownerAddress,
       spenderAddress
     );
-    expect(spenderAllowance.eq(spenderAllowanceAmountEther)).to.be.true;
+    expect(spenderAllowance).to.equal(spenderAllowanceAmountEther);
 
     // False positive check
     // throw new Error("Not a false positive test");
