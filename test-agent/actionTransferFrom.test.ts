@@ -29,19 +29,20 @@ describe("actionTransferFrom", function () {
     return;
   });
 
-  it("Should be able to transfer funds from another users", async function () {
+  it("Should be able to transferFrom one user to another", async function () {
     // Mint some tokens to transfer
-    const mintAmountHuman = 123;
+    const mintAmountHuman = 100;
     const mintAmountEther = ONE.mul(mintAmountHuman);
 
     const fionaAgentSignerId = "fiona";
-    const alexRecipientId = "alex";
+    const ownerOliverId = "oliver";
+    const spenderSamId = "sam";
 
-    const fionaAddress = await bfHRE
-      .blockflowSignerGet(fionaAgentSignerId)
+    const ownerOliverAddress = await bfHRE
+      .blockflowSignerGet(ownerOliverId)
       .then((v) => v.getAddress());
-    const alexAddress = await bfHRE
-      .blockflowSignerGet(alexRecipientId)
+    const samSpenderAddress = await bfHRE
+      .blockflowSignerGet(spenderSamId)
       .then((v) => v.getAddress());
 
     let response = await mintTokens(
@@ -49,37 +50,64 @@ describe("actionTransferFrom", function () {
       bfHRE,
       fionaAgentSignerId,
       mintAmountHuman,
-      alexRecipientId
+      ownerOliverId
     );
 
-    expect(response.success, "Mint to Alex Success").to.be.true;
+    expect(response.success, "Mint to Oliver Success").to.be.true;
 
-    // Confirming that Alex now has a balance of 123 tokens.
-    const alexRawBalance = await erc20.balanceOf(alexAddress);
-    expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
+    // Confirming that Oliver now has a balance of 123 tokens.
+    let ownerOliverRawBalance = await erc20.balanceOf(ownerOliverAddress);
+    expect(ownerOliverRawBalance).to.equal(mintAmountEther);
 
-    // transfer the tokens
+    // Now approve a non-owner EOA to spend Oliver's tokens.
     const agentName = agent.deployment.name;
-    let agentAction = "Transfer";
-    let agentCallData = {
-      amount: mintAmountHuman,
-      to: fionaAddress,
+    const agentAction = "Approve";
+
+    const spenderAllowanceHuman = 80;
+    const spenderAllowanceEther = ONE.mul(spenderAllowanceHuman);
+    const agentCallData: any = {
+      spender: samSpenderAddress,
+      amount: spenderAllowanceHuman,
     };
 
     response = await bfHRE.blockflowAgentCall(
       agentName,
       agentAction,
-      alexRecipientId,
+      ownerOliverId, // The owner must sign this transaction
       agentCallData
     );
 
-    // Confirm that the tokens were transfered.
-    expect(response.success, "Transfer ERC20 response successful").to.be.true;
-    expect(alexRawBalance.eq(BigNumber.from(0)));
+    // Confirm that the spender was approved for the correct amount.
+    expect(response.success, "Approve response successful").to.be.true;
+    const spenderAllowance = await erc20.allowance(
+      ownerOliverAddress,
+      samSpenderAddress
+    );
+    expect(spenderAllowance).to.equal(spenderAllowanceEther);
 
-    const fionaRawBalance = await erc20.balanceOf(fionaAddress);
-    console.log(`fionaRawBalance`, fionaRawBalance.toString());
-    expect(fionaRawBalance.eq(mintAmountEther)).to.be.true;
+    let agentActionTransferFrom = "Transfer from account";
+    let agentCallDataForTransferFrom = {
+      amount: spenderAllowanceHuman,
+      to: samSpenderAddress,
+      from: ownerOliverAddress,
+    };
+
+    response = await bfHRE.blockflowAgentCall(
+      agentName,
+      agentActionTransferFrom,
+      spenderSamId,
+      agentCallDataForTransferFrom
+    );
+
+    // Confirm that the tokens were transfered.
+    expect(response.success, "TransferFrom ERC20 response successful").to.be
+      .true;
+    ownerOliverRawBalance = await erc20.balanceOf(ownerOliverAddress);
+    expect(ownerOliverRawBalance).to.equal(
+      mintAmountEther.sub(spenderAllowanceEther)
+    );
+    const spenderSamRawBalance = await erc20.balanceOf(samSpenderAddress);
+    expect(spenderSamRawBalance).to.equal(spenderAllowanceEther);
 
     // False positive check
     // throw new Error("Not implemented");
