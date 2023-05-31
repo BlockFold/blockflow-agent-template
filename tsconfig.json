@@ -9,7 +9,8 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots": ["node_modules/@types", "./typechain"]
   },
   "include": ["./agentERC20Base.ts", "./actions", "./typechain", "./test", "./scripts"],
   "files": [],
