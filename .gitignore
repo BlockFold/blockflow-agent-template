@@ -13,6 +13,7 @@ typechain
 typechain-types
 node_modules
 /lib
+/*.zip
 #Hardhat files
 cache
 artifacts

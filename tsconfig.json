@@ -12,7 +12,7 @@
     "skipLibCheck": true,
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["./agentERC20Base.ts", "./actions", "./typechain"],
+  "include": ["./agentERC20Base.ts", "./actions", "./typechain", "./test", "./scripts"],
   "files": [],
   "ts-node": {
     "transpileOnly": true

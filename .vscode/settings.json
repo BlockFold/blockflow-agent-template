@@ -98,5 +98,6 @@
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
-  }
+  },
+  "workbench.colorTheme": "One Dark Pro"
 }

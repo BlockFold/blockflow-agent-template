@@ -1,8 +1,0 @@
-semi: true
-singleQuote: false
-quoteProps: consistent
-arrowParens: "always"
-printWidth: 80
-tabWidth: 2
-svelteSortOrder: "options-scripts-styles-markup"
-svelteBracketNewLine: false

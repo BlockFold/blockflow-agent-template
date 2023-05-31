@@ -46,7 +46,7 @@ export function bindActionRoleGrant(agent: Agent, erc20: BlockFlowERC20) {
     const roleKeccak = await erc20[role]();
 
     const receipt = await agent.confirmTx(
-      erc20.connect(signer!).grantRole(roleKeccak, to)
+      erc20.connect(signer!).grantRole(roleKeccak, to),
     );
 
     return { success: true };
