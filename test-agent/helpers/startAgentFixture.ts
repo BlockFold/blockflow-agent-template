@@ -16,7 +16,7 @@ export async function startAgentFixture(): Promise<AgentStateResult> {
   // Name our signers so that we can use them in the same way that
   // Blockflow signers will come to us when deployed.
   const bfSigners = await Bluebird.map(
-    ["fiona", "alex", "ivan", "charlotte"],
+    ["fiona", "alex", "ivan", "charlotte", "oliver", "sam"],
     (name, i) => bfHRE.blockflowSignerSet(name, devSigners[i])
   );
 

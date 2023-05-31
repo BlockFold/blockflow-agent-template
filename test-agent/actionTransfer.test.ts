@@ -55,8 +55,11 @@ describe("actionTransfer", function () {
     expect(response.success, "Mint to Alex Success").to.be.true;
 
     // Confirming that Alex now has a balance of 123 tokens.
-    const alexRawBalance = await erc20.balanceOf(alexAddress);
+    let alexRawBalance = await erc20.balanceOf(alexAddress);
     expect(alexRawBalance.eq(mintAmountEther)).to.be.true;
+
+    const fionaRawBalanceBefore = await erc20.balanceOf(fionaAddress);
+    expect(fionaRawBalanceBefore.eq(0)).to.be.true;
 
     // transfer the tokens
     const agentName = agent.deployment.name;
@@ -75,10 +78,10 @@ describe("actionTransfer", function () {
 
     // Confirm that the tokens were transfered.
     expect(response.success, "Transfer ERC20 response successful").to.be.true;
-    expect(alexRawBalance.eq(BigNumber.from(0)));
+    alexRawBalance = await erc20.balanceOf(alexAddress);
+    expect(alexRawBalance).to.equal(0);
 
     const fionaRawBalance = await erc20.balanceOf(fionaAddress);
-    console.log(`fionaRawBalance`, fionaRawBalance.toString());
     expect(fionaRawBalance.eq(mintAmountEther)).to.be.true;
 
     // False positive check
