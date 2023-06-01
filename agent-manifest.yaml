@@ -1,12 +1,12 @@
 blockFlowVersion: 1.0.0
-agentVersion: 1.0.2
+agentVersion: 1.0.6
 agentType: protocol-manager
 name: Blockflow ERC20
 code: blockflow-erc20
 license: "public/free"
 description: |
-  An ERC20 token contract keeps track of fungible tokens: any one token is exactly equal to any other token; 
-  no tokens have special rights or behavior associated with them. This makes ERC20 tokens useful for things 
+  An ERC20 token contract keeps track of fungible tokens: any one token is exactly equal to any other token;
+  no tokens have special rights or behavior associated with them. This makes ERC20 tokens useful for things
   like a medium of exchange currency, voting rights, staking, and more.
 
   Smart contracts are based on the Open Zeppelin reference implementation with AccessControl

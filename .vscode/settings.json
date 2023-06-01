@@ -2,7 +2,8 @@
   "editor.formatOnSave": true,
   "[typescript]": {
     "editor.formatOnPaste": false,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -97,5 +98,6 @@
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
-  }
+  },
+  "workbench.colorTheme": "One Dark Pro"
 }

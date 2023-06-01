@@ -1,13 +1,14 @@
-import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-chai-matchers";
 import "@openzeppelin/hardhat-upgrades";
 import "@typechain/hardhat";
+import { HardhatUserConfig } from "hardhat/config";
 
 // This enriches the `hre` environment so we can interact with agents
-import "blockflow-hardhat";
+import 'blockflow-hardhat';
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.16",
+    version: '0.8.16',
     settings: {
       optimizer: {
         enabled: true,
@@ -15,15 +16,15 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  defaultNetwork: "localhost",
+  defaultNetwork: 'localhost',
   networks: {
     localhost: {
-      url: "http://127.0.0.1:8545/",
+      url: 'http://127.0.0.1:8545/',
     },
   },
 
   typechain: {
-    outDir: "typechain",
+    outDir: 'typechain',
   },
 };
 
